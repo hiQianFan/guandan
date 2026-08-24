@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-24T03:45:09Z",
+  "title": "Design System: Guandan Scorekeeper",
+  "extensions": {
+    "colorMeta": {
+      "team-red": { "role": "primary", "displayName": "Direct Red", "canonical": "#FA114F", "tonalRamp": ["#26030C", "#4D0719", "#760A25", "#A50D34", "#D51043", "#FA3568", "#FF829F", "#FFD6E0"] },
+      "team-blue": { "role": "primary", "displayName": "Electric Cyan", "canonical": "#00F0FF", "tonalRamp": ["#002426", "#004A4F", "#00727A", "#009DA8", "#00CBD8", "#00F0FF", "#82F8FF", "#D6FDFF"] },
+      "victory-gold": { "role": "secondary", "displayName": "Victory Gold", "canonical": "#D4AF37", "tonalRamp": ["#241D06", "#493B0D", "#705B14", "#987C1D", "#C19F29", "#D4AF37", "#E9D681", "#FAF2D5"] },
+      "canvas": { "role": "neutral", "displayName": "Night Canvas", "canonical": "#020817", "tonalRamp": ["#020817", "#0D1525", "#1E293B", "#334155", "#64748B", "#94A3B8", "#CBD5E1", "#F8FAFC"] },
+      "game-surface": { "role": "neutral", "displayName": "Table Surface", "canonical": "#050A12", "tonalRamp": ["#050A12", "#101722", "#202936", "#354151", "#5E6B7D", "#919DAD", "#CBD2DB", "#F4F6F8"] },
+      "panel": { "role": "neutral", "displayName": "Graphite Panel", "canonical": "#1E293B", "tonalRamp": ["#111720", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1", "#F1F5F9"] },
+      "track": { "role": "neutral", "displayName": "Progress Track", "canonical": "#333333", "tonalRamp": ["#1A1A1A", "#333333", "#4D4D4D", "#666666", "#808080", "#A6A6A6", "#CCCCCC", "#F2F2F2"] },
+      "ink": { "role": "neutral", "displayName": "Clear Ink", "canonical": "#F8FAFC", "tonalRamp": ["#171819", "#303132", "#4B4C4D", "#68696A", "#878889", "#AAABAC", "#D0D1D2", "#F8FAFC"] },
+      "muted-ink": { "role": "neutral", "displayName": "Quiet Ink", "canonical": "#94A3B8", "tonalRamp": ["#15181D", "#2A3037", "#414A55", "#596573", "#738293", "#94A3B8", "#BCC5D0", "#E8EBEF"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Current Level", "purpose": "The single dominant game-state value." },
+      "title": { "displayName": "Team and State Title", "purpose": "Team identity and current-attacker headings." },
+      "body": { "displayName": "Body", "purpose": "Supporting prose outside the scoring surface." },
+      "label": { "displayName": "Control Label", "purpose": "Result and undo labels." }
+    },
+    "shadows": [
+      { "name": "team-state-glow", "value": "0 0 15px -5px currentColor", "purpose": "Selected or active team state only." },
+      { "name": "control-lift", "value": "0 1px 2px rgb(0 0 0 / 0.25)", "purpose": "Optional physical press feedback." }
+    ],
+    "motion": [
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Short control-state transitions." },
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Current-level state transitions." }
+    ],
+    "breakpoints": [
+      { "name": "portrait-compact", "value": "max-width: 639px and orientation: portrait" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "content-max", "value": "1600px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Red Result Button",
+      "kind": "button",
+      "refersTo": "result-red",
+      "description": "Records a red-team round result immediately.",
+      "html": "<button class=\"ds-result ds-result-red\"><strong>+3</strong><span>头/二</span></button>",
+      "css": ".ds-result{min-width:44px;min-height:56px;padding:12px 16px;border:1px solid rgb(255 255 255 / .08);border-radius:16px;background:#1E293B;color:#F8FAFC;font:600 14px/1.2 ui-sans-serif,system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:background-color .2s cubic-bezier(.25,1,.5,1),transform .2s cubic-bezier(.25,1,.5,1)}.ds-result strong{font-size:24px}.ds-result-red:hover{background:rgb(250 17 79 / .16)}.ds-result-red:focus-visible{outline:2px solid #FA114F;outline-offset:3px}.ds-result:active{transform:scale(.97)}"
+    },
+    {
+      "name": "Blue Result Button",
+      "kind": "button",
+      "refersTo": "result-blue",
+      "description": "Records a blue-team round result immediately.",
+      "html": "<button class=\"ds-result ds-result-blue\"><strong>+3</strong><span>头/二</span></button>",
+      "css": ".ds-result{min-width:44px;min-height:56px;padding:12px 16px;border:1px solid rgb(255 255 255 / .08);border-radius:16px;background:#1E293B;color:#F8FAFC;font:600 14px/1.2 ui-sans-serif,system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:background-color .2s cubic-bezier(.25,1,.5,1),transform .2s cubic-bezier(.25,1,.5,1)}.ds-result strong{font-size:24px}.ds-result-blue:hover{background:rgb(0 240 255 / .14)}.ds-result-blue:focus-visible{outline:2px solid #00F0FF;outline-offset:3px}.ds-result:active{transform:scale(.97)}"
+    },
+    {
+      "name": "Undo Last Round",
+      "kind": "button",
+      "refersTo": "undo",
+      "description": "A seat-local entry point to the shared global undo history.",
+      "html": "<button class=\"ds-undo\" aria-label=\"撤销上一局\">↶ <span>撤销上一局</span></button>",
+      "css": ".ds-undo{width:100%;min-width:44px;min-height:56px;padding:12px 16px;border:2px solid #475569;border-radius:16px;background:#050A12;color:#CBD5E1;font:600 14px/1.2 ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px}.ds-undo:hover{background:#1E293B;border-color:#64748B}.ds-undo:focus-visible{outline:2px solid #F8FAFC;outline-offset:3px}.ds-undo:disabled{color:#64748B;border-color:#334155;cursor:not-allowed}"
+    },
+    {
+      "name": "Current Level",
+      "kind": "card",
+      "refersTo": "score-card",
+      "description": "The dominant current level and assistive-technology status source.",
+      "html": "<section class=\"ds-score\" aria-label=\"当前红方打 2\"><span>2</span></section>",
+      "css": ".ds-score{width:240px;height:320px;border-radius:24px;background:#1E293B;color:#FA114F;display:grid;place-items:center}.ds-score span{font:700 160px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:-.025em}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Shared Table Scoreboard",
+    "overview": "This interface is a shared instrument placed beside a live card game. It must read instantly from more than one seat, accept a result in one touch, and disappear from attention between rounds. The existing visual identity is preserved; refinement means stronger spatial behavior, larger reachable controls, clearer focus, and less nonessential UI—not a new theme.",
+    "keyCharacteristics": ["One dominant current-level display", "Symmetric, seat-reachable red and blue controls", "Dark neutral surfaces with color reserved for team identity and state", "Large native buttons with explicit labels", "Responsive structure driven by available space, not device names"],
+    "rules": [
+      { "name": "The One-Touch Rule", "body": "A round result commits immediately. Never add a second confirmation step, Toast, modal, or transient success message.", "section": "components" },
+      { "name": "The Shared-Table Rule", "body": "Duplicate an action entry point only when it materially shortens reach from opposite seats; duplicated undo buttons always operate on the same global history.", "section": "components" },
+      { "name": "The Two-Team Rule", "body": "Red and blue identify sides; every actionable or selected state also needs text, shape, icon, or semantic state. Color alone is forbidden.", "section": "colors" },
+      { "name": "The Rare Gold Rule", "body": "Gold appears only for victory. If it appears during ordinary scoring, remove it.", "section": "colors" },
+      { "name": "The Numeric Anchor Rule", "body": "The current level is always the largest text. No other number competes with it.", "section": "typography" },
+      { "name": "The Flat-at-Rest Rule", "body": "Resting surfaces use tone or a subtle border. Shadows appear only to communicate state or physical press feedback.", "section": "elevation" }
+    ],
+    "dos": ["Do preserve the current near-black, red, cyan, white, and victory-gold identity.", "Do keep every scoring target at least 44×44 CSS px and aim for 56px height on phones.", "Do preserve full keyboard operation with native buttons, visible focus, Enter, and Space.", "Do keep the desktop/tablet three-part composition and use the portrait two-column composition.", "Do remove spacing and decoration before shrinking labels or touch targets.", "Do respect reduced motion, forced colors, zoom, and text enlargement."],
+    "donts": ["Don't build a complex dashboard or add decorative information.", "Don't use excessive glow, glassmorphism, or continuous animation that affects recognition.", "Don't add confirmation buttons, Toasts, temporary success copy, or modal feedback after scoring.", "Don't add the ImageGen concept's 贡牌关系 title, textual relationship bar, or explanatory area; preserve the existing left/right arrow light.", "Don't rely on red and blue alone to communicate state.", "Don't force portrait-phone users to rotate the device.", "Don't use 80vh or unbounded viewport sizing inside a component that shares space with controls and the footer."]
+  }
+}
