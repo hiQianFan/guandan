@@ -78,7 +78,7 @@ components:
 
 This interface is a shared instrument placed beside a live card game. It must read instantly from more than one seat, accept a result in one touch, and disappear from attention between rounds. The character is direct, restrained, and competitive: a near-black field, two unmistakable teams, and one dominant current level.
 
-The existing visual identity is preserved. Refinement means stronger spatial behavior, larger reachable controls, clearer focus, and less nonessential UI—not a new theme. Desktop and landscape tablet retain the red / score / blue structure; portrait phone moves the score above two equal team columns without changing the component vocabulary.
+The existing visual identity is preserved. Refinement means stronger spatial behavior, larger reachable controls, clearer focus, and less nonessential UI—not a new theme. Desktop and landscape tablet retain the red / score / blue structure; portrait devices move the score above two equal team columns without changing the component vocabulary.
 
 **Key Characteristics:**
 
@@ -170,9 +170,11 @@ The system is flat by default. Depth comes from tonal layers, solid team fills, 
 ### Responsive Scoreboard
 
 - **Wide and landscape:** Red controls / current level / blue controls. Each side vertically stacks `+3 / +2 / +1 / 撤销上一局`; side widths are bounded and the center consumes remaining space.
-- **Narrow portrait:** On phones and portrait tablets up to 899px wide, the current level sits at the top; red and blue controls form two equal columns below, each using the same vertical four-action stack. Never block the interface with a rotate-device prompt.
+- **Short landscape:** At 500px viewport height or less, each side keeps its position but places `+3 / +2 / +1` in one row, with the full-width undo action below.
+- **Portrait:** On phones and tablets, including large portrait iPads, the current level sits at the top; red and blue controls form two equal columns below, each using the same vertical action stack. Never block the interface with a rotate-device prompt.
 - **Height pressure:** Remove decorative gaps and reduce padding first. Never clip result or undo controls, and never size the central card with an isolated `vh` rule.
-- **Reading order:** Current state first, then red results, blue results, and the two local undo entries in a predictable DOM order.
+- **Identity:** Do not add visible “红方 / 蓝方” headings; established side placement, controls, accessible names, and color treatment identify each operation zone.
+- **Tribute indicator:** Preserve the existing arrow light at its established top position and size.
 
 ### Current Level
 

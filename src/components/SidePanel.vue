@@ -37,7 +37,7 @@ const canUndo = computed(() => store.history.length > 0);
 
 <template>
   <div
-    class="side-panel-root relative flex h-full min-h-0 w-full flex-col items-stretch gap-2 overflow-hidden p-2 sm:gap-3 sm:p-3 lg:p-4"
+    class="side-panel-root relative flex h-full min-h-0 w-full flex-col-reverse items-stretch gap-2 overflow-hidden px-2 py-2 sm:gap-3 sm:px-3 sm:py-4 lg:gap-6 lg:px-4 lg:py-6"
     :aria-label="side === 'red' ? '红方操作' : '蓝方操作'"
   >
     <!-- 中心 watermark：实心半透明灰色 -->
@@ -45,18 +45,21 @@ const canUndo = computed(() => store.history.length > 0);
       {{ side === 'red' ? redLevel : blueLevel }}
     </div>
     <!-- 主内容区：置于 watermark 之上 -->
-    <div class="relative z-10 flex min-h-0 flex-1 flex-col items-stretch justify-center gap-2 sm:gap-3">
-    <div class="flex min-h-11 shrink-0 items-center justify-center gap-2 overflow-visible sm:min-h-12 lg:min-h-16">
-        <h2
-          class="text-lg font-bold sm:text-xl lg:text-2xl"
-          :class="side === 'red' ? 'text-guandan-red' : 'text-guandan-blue'"
-        >
-          {{ side === 'red' ? '红方' : '蓝方' }}
-        </h2>
+    <div class="relative z-10 flex min-h-0 w-full flex-1 flex-col-reverse items-stretch gap-2 sm:gap-3 lg:gap-6">
+    <UndoAction :can-undo="canUndo" @undo="handleUndo" />
+
+    <div class="flex min-h-0 w-full flex-1 flex-col justify-center overflow-hidden py-1 lg:py-2">
+      <ResultButtons
+        :side="side"
+        @select="handleSelect"
+      />
+    </div>
+
+    <div class="flex h-12 w-full shrink-0 items-center justify-center overflow-visible sm:h-14 lg:h-24">
         <Transition :name="side === 'red' ? 'arrow-in-left' : 'arrow-in-right'">
           <span
             v-if="showArrow"
-            class="arrow-wrapper inline-flex size-8 shrink-0 items-center justify-center sm:size-10 lg:size-12"
+            class="arrow-wrapper inline-flex h-11 w-11 shrink-0 items-center justify-center sm:h-12 sm:w-12 lg:h-20 lg:w-20"
             :aria-label="side === 'red' ? '红方当前打级' : '蓝方当前打级'"
             role="img"
           >
@@ -86,15 +89,6 @@ const canUndo = computed(() => store.history.length > 0);
           </span>
         </Transition>
     </div>
-
-    <div class="flex min-h-0 flex-col">
-      <ResultButtons
-        :side="side"
-        @select="handleSelect"
-      />
-    </div>
-
-    <UndoAction :can-undo="canUndo" @undo="handleUndo" />
     </div>
   </div>
 </template>
