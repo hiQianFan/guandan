@@ -1,15 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { Attacker, RoundResult, GameSnapshot, TributeRelation } from '../types/game';
+import { LEVELS } from '../constants/levels';
 
 // 2 到 A，再 A2/A3（打A头游+末游时递进，A3 再不过则回2）
 // 索引: 0..11 (2..K), 12 (A), 13 (A2), 14 (A3)
-export const LEVELS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A', 'A2', 'A3'];
-
-// 导出常量供 composables 使用
-export const A_INDEX = 12;
-export const A2_INDEX = 13;
-export const A3_INDEX = 14;
+export { LEVELS, A_INDEX, A2_INDEX, A3_INDEX } from '../constants/levels';
 
 export const useGameStore = defineStore('game', () => {
   const redLevelIndex = ref(0);

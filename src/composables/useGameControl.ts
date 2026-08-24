@@ -1,5 +1,6 @@
-import { useGameStore, A_INDEX, A2_INDEX, A3_INDEX } from '../store/gameStore';
+import { useGameStore } from '../store/gameStore';
 import type { RoundResult } from '../types/game';
+import { getLevelProgression } from './gameProgression';
 
 export function useGameControl() {
   const store = useGameStore();
@@ -72,27 +73,10 @@ export function useGameControl() {
   // 赢家直接加分，红蓝同一套逻辑；赢家成为下一轮庄家
   function calculateLevelProgression(winner: 'red' | 'blue', result: RoundResult) {
     const winnerLevel = winner === 'red' ? store.redLevelIndex : store.blueLevelIndex;
-    const isInAZone = winnerLevel >= A_INDEX; // A, A2, A3
+    const progression = getLevelProgression(winnerLevel, result, winner === store.attacker);
 
-    if (isInAZone) {
-      // A级阶段逻辑
-      // 1. 双下 (result=3) 或 单下 (result=2) -> 过A成功，游戏结束
-      // 2. 保级 (result=1, 头游+末游) -> A->A2->A3->回2
-      if (result === 3 || result === 2) {
-        store.setGameOver(true);
-      } else if (result === 1) {
-        let nextLevel = 0;
-        if (winnerLevel === A_INDEX) nextLevel = A2_INDEX;
-        else if (winnerLevel === A2_INDEX) nextLevel = A3_INDEX;
-        else if (winnerLevel === A3_INDEX) nextLevel = 0;
-        store.setLevel(winner, nextLevel);
-      }
-    } else {
-      // 正常升级逻辑 (2 -> K)：赢家按结果加分
-      const levelIncrease = result;
-      const nextLevel = Math.min(winnerLevel + levelIncrease, A_INDEX);
-      store.setLevel(winner, nextLevel);
-    }
+    store.setLevel(winner, progression.nextLevel);
+    if (progression.gameOver) store.setGameOver(true);
   }
 
   // 撤销
