@@ -3,8 +3,6 @@ import type { RoundResult } from '../types/game';
 
 const props = defineProps<{
   side: 'red' | 'blue';
-  selectedResult: RoundResult | null;
-  selectedWinner: 'red' | 'blue' | null;
 }>();
 
 const emit = defineEmits<{
@@ -20,56 +18,33 @@ const options: { main: string; sub: string; value: RoundResult | 0 }[] = [
 
 const displayOptions = options.filter((o): o is { main: string; sub: string; value: RoundResult } => o.value > 0);
 
-function isActive(opt: { value: RoundResult }) {
-  return props.selectedWinner === props.side && props.selectedResult === opt.value;
-}
-
 function handleClick(opt: { value: RoundResult }) {
   emit('select', opt.value);
 }
 </script>
 
 <template>
-  <!-- 移动端：水平单行，3 个按钮全部可见无滚动；大屏：垂直堆叠 -->
-  <div class="flex flex-row gap-1.5 sm:gap-2 lg:flex-col lg:gap-3 w-full flex-shrink-0">
+  <div class="flex w-full flex-col gap-2 sm:gap-3">
     <button
       v-for="opt in displayOptions"
       :key="opt.value"
       type="button"
-      class="relative flex flex-1 lg:flex-none flex-col lg:flex-row items-center justify-center lg:justify-between px-2 py-1.5 lg:px-6 lg:py-4 min-h-[48px] lg:min-h-[56px] min-w-0 rounded-lg lg:rounded-2xl transition-all duration-200 active:scale-95 w-full border group overflow-hidden gap-0.5 lg:gap-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+      class="group flex min-h-14 w-full min-w-0 items-center justify-between gap-2 rounded-lg border px-3 py-2 font-semibold transition-colors duration-200 active:scale-[0.98] sm:rounded-2xl sm:px-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
       :class="[
-        isActive(opt)
-          ? side === 'red'
-            ? 'bg-guandan-red border-guandan-red text-white shadow-[0_0_20px_-5px_rgb(var(--guandan-red-rgb)/0.6)]'
-            : 'bg-guandan-blue border-guandan-blue text-neutral-900 shadow-[0_0_20px_-5px_rgb(var(--guandan-blue-rgb)/0.6)]'
-          : side === 'red'
-            ? 'bg-neutral-800/40 border-white/5 text-neutral-400 hover:bg-guandan-red/10 hover:border-guandan-red/30 hover:text-guandan-red hover:shadow-[0_0_15px_-5px_rgb(var(--guandan-red-rgb)/0.15)] focus-visible:ring-guandan-red'
-            : 'bg-neutral-800/40 border-white/5 text-neutral-400 hover:bg-guandan-blue/10 hover:border-guandan-blue/30 hover:text-guandan-blue hover:shadow-[0_0_15px_-5px_rgb(var(--guandan-blue-rgb)/0.15)] focus-visible:ring-guandan-blue',
+        side === 'red'
+          ? 'bg-neutral-800/40 border-white/10 text-neutral-200 hover:bg-guandan-red/10 hover:border-guandan-red/40 focus-visible:ring-guandan-red'
+          : 'bg-neutral-800/40 border-white/10 text-neutral-200 hover:bg-guandan-blue/10 hover:border-guandan-blue/40 focus-visible:ring-guandan-blue',
       ]"
-      :title="opt.sub"
+      :aria-label="`${side === 'red' ? '红方' : '蓝方'}${opt.main}，${opt.sub}`"
       @click="handleClick(opt)"
     >
-      <!-- 激活状态下的光效背景 -->
-      <div 
-        v-if="isActive(opt)"
-        class="absolute inset-0 bg-gradient-to-r opacity-20 pointer-events-none"
-        :class="side === 'red' ? 'from-white/0 via-white/30 to-white/0' : 'from-black/0 via-black/10 to-black/0'"
-      ></div>
-
-      <!-- 主数字 -->
       <span 
-        class="text-base lg:text-3xl font-bold leading-none tracking-tight transition-transform duration-300 group-hover:scale-105"
-        :class="isActive(opt) ? 'scale-105' : ''"
+        class="text-xl font-bold leading-none tracking-tight sm:text-2xl lg:text-3xl"
       >
         {{ opt.main }}
       </span>
-      
-      <!-- 小说明：移动端垂直排在数字下方、缩小字号；sm+ 水平排在右侧 -->
       <span 
-        class="text-[10px] lg:text-sm font-medium leading-none transition-colors duration-200 opacity-80"
-        :class="isActive(opt) 
-          ? (side === 'red' ? 'text-white/90' : 'text-neutral-900/80') 
-          : 'text-neutral-500 group-hover:text-current'"
+        class="text-xs font-medium leading-none text-neutral-400 group-hover:text-current sm:text-sm"
       >
         {{ opt.sub }}
       </span>

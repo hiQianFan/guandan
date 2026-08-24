@@ -36,35 +36,28 @@ const EMAIL = "helloahao@icloud.com";
           :href="GITHUB_URL"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 rounded hover:text-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-500"
+          class="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded hover:text-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           <Github class="size-3.5 shrink-0" aria-hidden="true" />
-          <span>GitHub</span>
+          <span class="max-sm:sr-only">GitHub</span>
         </a>
         <a
           :href="BLOG_URL"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 rounded hover:text-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-500"
+          class="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded hover:text-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           <Globe class="size-3.5 shrink-0" aria-hidden="true" />
-          <span>WebSite</span>
+          <span class="max-sm:sr-only">WebSite</span>
         </a>
         <a
           :href="`mailto:${EMAIL}`"
-          class="inline-flex items-center gap-1.5 break-all rounded hover:text-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-500"
+          class="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 break-all rounded hover:text-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           <Mail class="size-3.5 shrink-0" aria-hidden="true" />
-          <span>{{ EMAIL }}</span>
+          <span class="max-sm:sr-only">{{ EMAIL }}</span>
         </a>
       </footer>
     </div>
   </div>
 </template>
-
-<style scoped>
-.ts {
-  /*transform: rotate(90deg);
-  //transform-origin: center; /* 旋转原点 */
-}
-</style>

@@ -41,9 +41,8 @@ const blueClipPath = computed(() => {
 </script>
 
 <template>
-  <!-- 一劳永逸：外层 px-3 / py-1.5 预留灯条 6px 空间，内层高度少 24px，灯条始终在框内不被裁切 -->
-  <div class="relative w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-3 py-1.5 md:px-4 md:py-2 flex flex-col items-center group transition-transform duration-300 hover:scale-[1.02]">
-    <div class="relative w-full flex flex-col h-[calc(80vh-24px)] min-h-[176px]">
+  <div class="relative mx-auto flex h-full w-full max-w-xl flex-col items-center px-2 py-2 sm:px-3">
+    <div class="relative flex h-full min-h-0 w-full flex-col">
       <!-- 插槽：放置 ScoreCard，z-10 在灯条之下 -->
       <div class="relative z-10 w-full h-full min-h-0 rounded-3xl overflow-hidden flex flex-col">
         <slot />

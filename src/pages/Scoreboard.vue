@@ -1,48 +1,52 @@
 <script setup lang="ts">
-import { useDeviceAdapt } from '../composables/useDeviceAdapt';
-import RotatePrompt from '../components/RotatePrompt.vue';
-// import LevelStrip from '../components/LevelStrip.vue'; // 已禁用：级数进度移至 ScoreCard 两侧
 import LevelProgressBars from '../components/LevelProgressBars.vue';
 import ScoreCard from '../components/ScoreCard.vue';
 import SidePanel from '../components/SidePanel.vue';
-
-const { showRotatePrompt } = useDeviceAdapt();
 </script>
 
 <template>
-  <div class="relative w-full h-full min-h-0 bg-guandan-surface flex flex-col overflow-hidden text-gray-100 font-sans">
-    <!-- 竖屏窄屏提示 -->
-    <RotatePrompt :show="showRotatePrompt" />
+  <div class="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-guandan-surface font-sans text-gray-100">
+    <main class="scoreboard-layout min-h-0 flex-1">
+      <section class="score-area relative z-0 flex min-h-0 min-w-0 items-center justify-center overflow-hidden" aria-label="当前级数">
+        <LevelProgressBars>
+          <ScoreCard class="min-h-0 w-full max-w-full flex-1" />
+        </LevelProgressBars>
+      </section>
 
-    <!-- 主内容（横屏三段式） -->
-    <div
-      v-show="!showRotatePrompt"
-      class="flex flex-col flex-1 min-h-0 overflow-hidden"
-    >
-      <!-- 顶部：级数灯条 (已禁用，改用 ScoreCard 两侧进度条) -->
-      <!-- <header class="flex-shrink-0 bg-white/5 backdrop-blur-sm border-b border-white/5 z-10">
-        <LevelStrip />
-      </header> -->
+      <aside class="red-area relative z-10 min-h-0 min-w-0">
+        <SidePanel side="red" />
+      </aside>
 
-      <!-- 中部：左右对称。侧栏 z-10 确保始终置于中央区域之上，避免被遮挡 -->
-      <main class="flex flex-1 min-h-0 overflow-hidden items-stretch justify-between gap-3 md:gap-6 lg:gap-8 px-4 py-4 md:px-6 md:py-5 lg:px-10 lg:py-6 max-w-full w-full">
-        <!-- 左侧边栏：红方 -->
-        <aside class="relative z-10 flex-shrink-0 flex items-stretch justify-start min-w-[120px] sm:min-w-[160px] md:min-w-[200px] lg:min-w-[260px] w-[22vw] md:w-[20vw] lg:w-[18vw] max-w-[280px]">
-          <SidePanel side="red" />
-        </aside>
-
-        <!-- 中央区域：灯条留白由 LevelProgressBars 内部 padding + 略减高度解决 -->
-        <section class="relative z-0 flex flex-1 min-h-0 min-w-0 items-center justify-center overflow-hidden">
-          <LevelProgressBars>
-            <ScoreCard class="flex-1 w-full max-w-full min-h-0" />
-          </LevelProgressBars>
-        </section>
-
-        <!-- 右侧边栏：蓝方 -->
-        <aside class="relative z-10 flex-shrink-0 flex items-stretch justify-end min-w-[120px] sm:min-w-[160px] md:min-w-[200px] lg:min-w-[260px] w-[22vw] md:w-[20vw] lg:w-[18vw] max-w-[280px]">
-          <SidePanel side="blue" />
-        </aside>
-      </main>
-    </div>
+      <aside class="blue-area relative z-10 min-h-0 min-w-0">
+        <SidePanel side="blue" />
+      </aside>
+    </main>
   </div>
 </template>
+
+<style scoped>
+.scoreboard-layout {
+  display: grid;
+  grid-template-areas: "red score blue";
+  grid-template-columns: minmax(7rem, 17.5rem) minmax(11rem, 1fr) minmax(7rem, 17.5rem);
+  gap: clamp(0.5rem, 2vw, 2rem);
+  padding: clamp(0.5rem, 2vw, 2rem);
+  overflow: hidden;
+}
+
+.red-area { grid-area: red; }
+.score-area { grid-area: score; }
+.blue-area { grid-area: blue; }
+
+@media (max-width: 899px) and (orientation: portrait) {
+  .scoreboard-layout {
+    grid-template-areas:
+      "score score"
+      "red blue";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(8rem, 24dvh) minmax(0, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+</style>

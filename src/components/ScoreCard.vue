@@ -34,6 +34,10 @@ const bgClass = () => {
   <div
     class="relative flex flex-col items-center justify-center w-full h-full min-h-0 flex-1 rounded-3xl px-6 py-4 sm:px-8 sm:py-6 overflow-hidden self-center transform-gpu"
     :class="cardClass()"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    :aria-label="`当前${store.attacker === 'red' ? '红方' : '蓝方'}打 ${store.currentLevel}`"
   >
     <!-- 背景装饰：巨大的虚化色块，随阵营变化 -->
     <div 
@@ -85,7 +89,7 @@ const bgClass = () => {
  * - 大屏：14rem 上限
  */
 .score-number {
-  font-size: clamp(6rem, 28vw, 14rem);
+  font-size: clamp(4rem, min(28vw, 38dvh), 14rem);
 }
 
 .slide-fade-enter-active {

@@ -1,18 +1,16 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { Attacker, RoundResult, GameSnapshot, TributeRelation } from '../types/game';
-import { LEVELS } from '../constants/levels';
+import type { Attacker, GameSnapshot, TributeRelation } from '../types/game.ts';
+import { LEVELS } from '../constants/levels.ts';
 
 // 2 到 A，再 A2/A3（打A头游+末游时递进，A3 再不过则回2）
 // 索引: 0..11 (2..K), 12 (A), 13 (A2), 14 (A3)
-export { LEVELS, A_INDEX, A2_INDEX, A3_INDEX } from '../constants/levels';
+export { LEVELS, A_INDEX, A2_INDEX, A3_INDEX } from '../constants/levels.ts';
 
 export const useGameStore = defineStore('game', () => {
   const redLevelIndex = ref(0);
   const blueLevelIndex = ref(0);
   const attacker = ref<Attacker>('red');
-  const pendingResult = ref<RoundResult | null>(null);
-  const pendingWinner = ref<'red' | 'blue' | null>(null);
   const history = ref<GameSnapshot[]>([]);
   const lastTribute = ref<TributeRelation | null>(null);
   const isGameOver = ref(false); // 过A 后为 true
@@ -32,11 +30,6 @@ export const useGameStore = defineStore('game', () => {
 
   function setAttacker(newAttacker: Attacker) {
     attacker.value = newAttacker;
-  }
-
-  function setPending(winner: 'red' | 'blue' | null, result: RoundResult | null) {
-    pendingWinner.value = winner;
-    pendingResult.value = result;
   }
 
   function pushHistory(snapshot: GameSnapshot) {
@@ -59,8 +52,6 @@ export const useGameStore = defineStore('game', () => {
     redLevelIndex.value = 0;
     blueLevelIndex.value = 0;
     attacker.value = 'red';
-    pendingResult.value = null;
-    pendingWinner.value = null;
     history.value = [];
     lastTribute.value = null;
     isGameOver.value = false;
@@ -71,8 +62,6 @@ export const useGameStore = defineStore('game', () => {
     redLevelIndex,
     blueLevelIndex,
     attacker,
-    pendingResult,
-    pendingWinner,
     history,
     lastTribute,
     isGameOver,
@@ -84,7 +73,6 @@ export const useGameStore = defineStore('game', () => {
     // Actions (Atomic)
     setLevel,
     setAttacker,
-    setPending,
     pushHistory,
     popHistory,
     setLastTribute,

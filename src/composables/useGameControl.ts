@@ -1,21 +1,13 @@
-import { useGameStore } from '../store/gameStore';
-import type { RoundResult } from '../types/game';
-import { getLevelProgression } from './gameProgression';
+import { useGameStore } from '../store/gameStore.ts';
+import type { RoundResult } from '../types/game.ts';
+import { getLevelProgression } from './gameProgression.ts';
 
 export function useGameControl() {
   const store = useGameStore();
 
-  // 选择结果
-  function selectResult(winner: 'red' | 'blue', result: RoundResult) {
+  function recordRound(winner: 'red' | 'blue', result: RoundResult) {
     if (store.isGameOver) return;
-    store.setPending(winner, result);
-  }
 
-  // 确认结果并推进游戏
-  function confirmRound() {
-    if (store.pendingResult === null || store.pendingWinner === null || store.isGameOver) return;
-
-    // 1. 记录历史快照
     store.pushHistory({
       redLevelIndex: store.redLevelIndex,
       blueLevelIndex: store.blueLevelIndex,
@@ -23,18 +15,9 @@ export function useGameControl() {
       lastTribute: store.lastTribute ? JSON.parse(JSON.stringify(store.lastTribute)) : null,
     });
 
-    const result = store.pendingResult;
-    const winner = store.pendingWinner;
-
-    // 2. 计算贡牌关系
     calculateTribute(winner, result);
-
-    // 3. 计算级别变更（赢家加分，红蓝同一套逻辑）
     calculateLevelProgression(winner, result);
-
-    // 4. 更新攻击方和清理状态
     store.setAttacker(winner);
-    store.setPending(null, null);
   }
 
   // 计算贡牌
@@ -89,7 +72,6 @@ export function useGameControl() {
       store.setLastTribute(lastSnapshot.lastTribute);
       store.setGameOver(false);
     }
-    store.setPending(null, null);
   }
 
   // 重置
@@ -98,8 +80,7 @@ export function useGameControl() {
   }
 
   return {
-    selectResult,
-    confirmRound,
+    recordRound,
     undoRound,
     resetGame,
   };

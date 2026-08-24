@@ -170,7 +170,7 @@ The system is flat by default. Depth comes from tonal layers, solid team fills, 
 ### Responsive Scoreboard
 
 - **Wide and landscape:** Red controls / current level / blue controls. Each side vertically stacks `+3 / +2 / +1 / 撤销上一局`; side widths are bounded and the center consumes remaining space.
-- **Portrait phone:** Current level at the top; red and blue controls form two equal columns below, each using the same vertical four-action stack. Never block the interface with a rotate-device prompt.
+- **Narrow portrait:** On phones and portrait tablets up to 899px wide, the current level sits at the top; red and blue controls form two equal columns below, each using the same vertical four-action stack. Never block the interface with a rotate-device prompt.
 - **Height pressure:** Remove decorative gaps and reduce padding first. Never clip result or undo controls, and never size the central card with an isolated `vh` rule.
 - **Reading order:** Current state first, then red results, blue results, and the two local undo entries in a predictable DOM order.
 

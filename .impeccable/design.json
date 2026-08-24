@@ -29,7 +29,7 @@
       { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Current-level state transitions." }
     ],
     "breakpoints": [
-      { "name": "portrait-compact", "value": "max-width: 639px and orientation: portrait" },
+      { "name": "portrait-compact", "value": "max-width: 899px and orientation: portrait" },
       { "name": "sm", "value": "640px" },
       { "name": "md", "value": "768px" },
       { "name": "lg", "value": "1024px" },
