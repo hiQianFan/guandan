@@ -19,6 +19,7 @@ const EMAIL = "helloahao@icloud.com";
     rather than stretching to infinity.
   -->
   <div class="w-full h-full bg-guandan-surface flex items-center justify-center overflow-hidden">
+    <h1 class="sr-only">掼蛋计分器</h1>
     <!--
       不再用 max-w 把界面锁在中央：大屏上那会让两侧操作区离屏幕边缘很远，
       整个界面"吊"在中间。改为占满宽度，由 Scoreboard 的百分比栅格

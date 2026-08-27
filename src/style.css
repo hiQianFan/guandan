@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* 惯蛋主色 RGB（用于 rgba/glow） */
+  /* 掼蛋主色 RGB（用于 rgba/glow） */
   --guandan-red-rgb: 250 17 79;
   --guandan-blue-rgb: 0 240 255;
 
