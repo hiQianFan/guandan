@@ -2,7 +2,7 @@
 title: 'Migrate production hosting from Cloudflare Pages to Workers'
 type: 'chore'
 created: '2026-08-27'
-status: 'in-review'
+status: 'done'
 baseline_commit: 'aa145ec0e8bbd8dac752f70160e5f3c2465a2b37'
 context:
   - 'AGENTS.md'
@@ -46,8 +46,8 @@ context:
 **Execution:**
 - [x] `package.json` and lockfile -- add Wrangler as a development dependency without changing application dependencies.
 - [x] `wrangler.jsonc` -- configure `dist`, SPA fallback, `workers_dev: false`, `preview_urls: false`, and `guandan.mapin.net` Custom Domain.
-- [ ] Cloudflare -- deploy and validate the Worker, transfer the custom domain from Pages, connect Workers Builds to `hiQianFan/guandan` `main`, disable non-production builds, then remove the obsolete Pages project.
-- [ ] GitHub -- commit and push the verified repository configuration.
+- [x] Cloudflare -- deploy and validate the Worker, transfer the custom domain from Pages, connect Workers Builds to `hiQianFan/guandan` `main`, disable non-production builds, then remove the obsolete Pages project.
+- [x] GitHub -- commit and push the verified repository configuration.
 
 **Acceptance Criteria:**
 - Given a push to `main`, when Workers Builds succeeds, then the new version serves `guandan.mapin.net`.
