@@ -32,7 +32,7 @@ const bgClass = () => {
 
 <template>
   <div
-    class="relative flex flex-col items-center justify-center w-full h-full min-h-0 flex-1 rounded-3xl px-6 py-4 sm:px-8 sm:py-6 overflow-hidden self-center transform-gpu"
+    class="score-card relative flex flex-col items-center justify-center w-full h-full min-h-0 flex-1 px-6 py-4 sm:px-8 sm:py-6 overflow-hidden self-center transform-gpu"
     :class="cardClass()"
     role="status"
     aria-live="polite"
@@ -49,9 +49,9 @@ const bgClass = () => {
     <!-- 皇冠 Lottie：游戏结束（过 A 胜利）时显示，使用高度过渡避免挤压下方分数 -->
     <div
       class="overflow-hidden transition-[max-height] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
-      :style="{ maxHeight: store.isGameOver ? '18vmin' : '0px' }"
+      :style="{ maxHeight: store.isGameOver ? 'clamp(3.75rem, 20cqh, 9rem)' : '0px' }"
     >
-      <div class="relative z-10 w-[20vmin] h-[20vmin] min-w-[60px] min-h-[60px] sm:min-w-[72px] sm:min-h-[72px] mx-auto flex items-center justify-center">
+      <div class="crown-slot relative z-10 mx-auto flex items-center justify-center">
         <Transition name="crown-inner">
           <DotLottieVue
             v-if="store.isGameOver"
@@ -83,13 +83,23 @@ const bgClass = () => {
 </template>
 
 <style scoped>
-/* 分数数字：与 SidePanel watermark 互换后，主视觉更大
- * - 小屏：6rem
- * - 常规：28vw
- * - 大屏：14rem 上限
- */
+/* 分数数字：以 score-area 容器为基准，同时受宽高约束取较小者，
+ * 横屏宽卡片由高度兜底、竖屏高卡片由宽度兜底，两种形状都不溢出。
+ * 不设 rem 上限——18rem 会让 2K/4K 屏上的数字停在 288px，
+ * 相对放大后的卡片明显偏小。40rem 仅作极端屏的保护。 */
+/* 圆角继承 score-area 的 --card-r，与进度环共用同一来源 */
+.score-card {
+  border-radius: var(--card-r, 1.5rem);
+}
+
 .score-number {
-  font-size: clamp(4rem, min(28vw, 38dvh), 14rem);
+  font-size: clamp(3.5rem, min(55cqw, 62cqh), 40rem);
+}
+
+/* 皇冠与数字同源缩放，避免游戏结束时两者比例脱节 */
+.crown-slot {
+  width: clamp(3.75rem, 22cqh, 10rem);
+  height: clamp(3.75rem, 22cqh, 10rem);
 }
 
 .slide-fade-enter-active {

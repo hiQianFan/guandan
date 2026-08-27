@@ -14,7 +14,7 @@ colors:
 typography:
   display:
     fontFamily: "ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(6rem, 28vw, 14rem)"
+    fontSize: "{sizing.score-number}"
     fontWeight: 700
     lineHeight: 1
     letterSpacing: "-0.025em"
@@ -36,8 +36,11 @@ typography:
 rounded:
   sm: "8px"
   md: "12px"
-  lg: "16px"
-  score: "24px"
+  ring-inset: "6px"
+  control-ratio: "0.26"
+  control: "calc(0.26 * <control height>)"
+  score: "clamp(24px, 4cqmin, 48px)"
+  score-ring: "calc(<rounded.score> + <rounded.ring-inset>)"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -45,25 +48,30 @@ spacing:
   lg: "16px"
   xl: "24px"
   xxl: "32px"
+sizing:
+  control-row: "clamp(44px, 15cqh, clamp(96px, 11dvh, 176px))"
+  side-column: "minmax(144px, 22%)"
+  score-number: "clamp(56px, min(55cqw, 62cqh), 640px)"
+  row-layout-threshold: "side-panel height < 260px and width >= 176px"
 components:
   result-red:
     backgroundColor: "{colors.panel}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.lg}"
-    padding: "16px 24px"
-    height: "56px"
+    rounded: "{rounded.control}"
+    padding: "8px 12-24px"
+    height: "{sizing.control-row}"
   result-blue:
     backgroundColor: "{colors.panel}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.lg}"
-    padding: "16px 24px"
-    height: "56px"
+    rounded: "{rounded.control}"
+    padding: "8px 12-24px"
+    height: "{sizing.control-row}"
   undo:
     backgroundColor: "{colors.game-surface}"
     textColor: "{colors.muted-ink}"
-    rounded: "{rounded.lg}"
-    padding: "16px 24px"
-    height: "56px"
+    rounded: "{rounded.control}"
+    padding: "8px 12-24px"
+    height: "{sizing.control-row}"
   score-card:
     backgroundColor: "{colors.panel}"
     textColor: "{colors.ink}"
@@ -126,7 +134,7 @@ The palette uses a near-black neutral field so the two team colors carry identit
 
 ### Hierarchy
 
-- **Display** (700, responsive with a 14rem ceiling, 1 line-height): Current level only; it must shrink against both available width and height without clipping.
+- **Display** (700, sized from the score container against both its width and height, 1 line-height): Current level only. It must scale with the card rather than stopping at a `rem` ceiling, and must never clip.
 - **Title** (700, 1.25rem, 1.2 line-height): Team names and current-attacker heading.
 - **Body** (400, 1rem, 1.5 line-height): Supporting prose outside the core scoring surface.
 - **Label** (600, 0.875rem, 1.2 line-height): Result descriptions and control labels; never smaller than 12px on the scoring surface.
@@ -148,8 +156,8 @@ The system is flat by default. Depth comes from tonal layers, solid team fills, 
 
 ### Buttons
 
-- **Shape:** Clearly bounded controls with 8–16px corner radii; do not introduce pills.
-- **Result:** Entire surface is clickable. Mobile target height is at least 56px where space permits and never below 44×44 CSS px.
+- **Shape:** Corner radius is a fixed ratio of the control's own height (`0.26 × height`), not a fixed pixel value. A control that grows from 44px to 176px must stay equally round; a capped radius makes large controls read as square. Do not introduce pills.
+- **Result:** Entire surface is clickable. Height comes from `{sizing.control-row}` and is never below 44×44 CSS px.
 - **Team assignment:** Red and blue columns use identical geometry and ordering. Team color appears on labels, focus, progress, and active state.
 - **Hover / Focus:** Hover is a subtle tonal/team tint. Keyboard focus uses a high-contrast 2px ring with sufficient offset; focus is never removed without replacement.
 - **Active:** Brief scale or tonal response is allowed; reduced-motion mode removes scale.
@@ -157,7 +165,7 @@ The system is flat by default. Depth comes from tonal layers, solid team fills, 
 
 ### Cards / Containers
 
-- **Corner Style:** The central score surface may use the existing signature 24px radius; ordinary panels stop at 16px.
+- **Corner Style:** The central score surface scales its radius with the container (`{rounded.score}`), starting at the signature 24px on phones and opening up on large displays. The progress ring sits `{rounded.ring-inset}` outside the card and must add that same inset to its radius so the arcs stay concentric.
 - **Background:** Use neutral tonal separation. Avoid nested card stacks.
 - **Shadow Strategy:** Flat at rest; active-state glow only.
 - **Border:** Use subtle full boundaries where needed; colored side-stripe accents are prohibited.
@@ -189,6 +197,7 @@ The system is flat by default. Depth comes from tonal layers, solid team fills, 
 - **Do** preserve full keyboard operation with native buttons, visible focus, Enter, and Space.
 - **Do** keep the desktop/tablet three-part composition and use the portrait two-column composition.
 - **Do** remove spacing and decoration before shrinking labels or touch targets.
+- **Do** derive corner radius, gaps, and icon sizes from the control's own size token so proportions hold from 320px to 4K.
 - **Do** respect reduced motion, forced colors, zoom, and text enlargement.
 
 ### Don't:
@@ -200,3 +209,5 @@ The system is flat by default. Depth comes from tonal layers, solid team fills, 
 - **Don't** rely on red and blue alone to communicate state.
 - **Don't** force portrait-phone users to rotate the device.
 - **Don't** use `80vh` or unbounded viewport sizing inside a component that shares space with controls and the footer.
+- **Don't** cap a corner radius in pixels while the control it belongs to keeps growing; the ratio collapses and the control reads as square on large screens.
+- **Don't** cap the score card's width or the level number's size in `rem`; a fixed ceiling leaves the interface hanging in the middle of a large display instead of scaling from the edges.

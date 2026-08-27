@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { CircleArrowLeft, CircleArrowRight } from 'lucide-vue-next';
 import { useGameStore, LEVELS } from '../store/gameStore';
 import { useGameControl } from '../composables/useGameControl';
 import ResultButtons from './ResultButtons.vue';
 import UndoAction from './UndoAction.vue';
+import AttackerArrow from './AttackerArrow.vue';
 
 const props = defineProps<{
   side: 'red' | 'blue';
@@ -21,12 +21,6 @@ function handleUndo() {
   undoRound();
 }
 
-// 是否是当前进攻方
-const isAttacker = computed(() => store.attacker === props.side);
-
-// 游戏未开始时（双方都是 2，无历史）不显示箭头
-const showArrow = computed(() => isAttacker.value && store.history.length > 0);
-
 // 双方当前级数
 const redLevel = computed(() => LEVELS[store.redLevelIndex]);
 const blueLevel = computed(() => LEVELS[store.blueLevelIndex]);
@@ -37,134 +31,83 @@ const canUndo = computed(() => store.history.length > 0);
 
 <template>
   <div
-    class="side-panel-root relative flex h-full min-h-0 w-full flex-col-reverse items-stretch gap-2 overflow-hidden px-2 py-2 sm:gap-3 sm:px-3 sm:py-4 lg:gap-6 lg:px-4 lg:py-6"
+    class="side-panel-root relative flex h-full min-h-0 w-full flex-col items-stretch overflow-hidden"
     :aria-label="side === 'red' ? '红方操作' : '蓝方操作'"
   >
-    <!-- 中心 watermark：实心半透明灰色 -->
-    <div class="side-watermark" aria-hidden="true">
-      {{ side === 'red' ? redLevel : blueLevel }}
-    </div>
-    <!-- 主内容区：置于 watermark 之上 -->
-    <div class="relative z-10 flex min-h-0 w-full flex-1 flex-col-reverse items-stretch gap-2 sm:gap-3 lg:gap-6">
-    <UndoAction :can-undo="canUndo" @undo="handleUndo" />
+    <!-- 三段：箭头（绝对定位钉顶部）/ 结果按钮组 / 撤销 -->
+    <div class="side-panel-stack relative z-10 flex min-h-0 w-full flex-1 flex-col items-stretch">
+      <!-- 横屏：箭头固定在侧栏顶部，不参与操作栈的垂直居中。
+           竖屏改由 Scoreboard 挂在卡片上方，此处隐藏。 -->
+      <AttackerArrow :side="side" class="side-panel-arrow" />
 
-    <div class="flex min-h-0 w-full flex-1 flex-col justify-center overflow-hidden py-1 lg:py-2">
+      <!-- 水印随结果按钮组居中，故交由 ResultButtons 承载 -->
       <ResultButtons
         :side="side"
+        :watermark="side === 'red' ? redLevel : blueLevel"
         @select="handleSelect"
       />
-    </div>
 
-    <div class="flex h-12 w-full shrink-0 items-center justify-center overflow-visible sm:h-14 lg:h-24">
-        <Transition :name="side === 'red' ? 'arrow-in-left' : 'arrow-in-right'">
-          <span
-            v-if="showArrow"
-            class="arrow-wrapper inline-flex h-11 w-11 shrink-0 items-center justify-center sm:h-12 sm:w-12 lg:h-20 lg:w-20"
-            :aria-label="side === 'red' ? '红方当前打级' : '蓝方当前打级'"
-            role="img"
-          >
-            <svg class="absolute h-0 w-0" aria-hidden="true">
-              <defs>
-                <filter :id="`arrow-stroke-glow-${side}`" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur1" />
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur2" />
-                  <feFlood flood-color="#22c55e" flood-opacity="0.9" result="color" />
-                  <feComposite in="color" in2="blur2" operator="in" result="glow2" />
-                  <feFlood flood-color="#22c55e" flood-opacity="0.5" result="color2" />
-                  <feComposite in="color2" in2="blur1" operator="in" result="glow1" />
-                  <feMerge>
-                    <feMergeNode in="glow2" />
-                    <feMergeNode in="glow1" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-            </svg>
-            <component
-              :is="side === 'red' ? CircleArrowLeft : CircleArrowRight"
-              class="h-full w-full text-[#22c55e]"
-              :style="{ filter: `url(#arrow-stroke-glow-${side})` }"
-              aria-hidden="true"
-            />
-          </span>
-        </Transition>
-    </div>
+      <UndoAction :can-undo="canUndo" @undo="handleUndo" />
     </div>
   </div>
 </template>
 
 <style scoped>
-/* 中心 watermark：实心半透明灰色，作为背景弱化
- */
-.side-watermark {
+/* 容器上下文：按钮、箭头、间距均以侧栏实际可用空间为基准，
+ * 而非全视口。竖屏双列与横屏三段式下同一组件因此保持一致比例。 */
+.side-panel-root {
+  container-type: size;
+  container-name: side-panel;
+}
+
+
+/* padding 与 gap 放在容器的子元素上：cqh 在容器自身样式里会解析到
+ * 祖先容器（此处不存在，会回退到视口），只有后代才能引用 side-panel 尺寸。
+ * 间距与按钮同源缩放（按钮 15cqh），保持视觉节奏一致。 */
+.side-panel-stack {
+  padding: clamp(0.375rem, 2.5cqh, 1.25rem);
+  /* 三段布局：箭头 / 结果按钮组 / 撤销。
+   * 段间距（这里的 gap）明显大于组内间距（ResultButtons 的 1.8cqh），
+   * 让"三个分数按钮是一组"的关系在视觉上成立。
+   * 不用 space-between：那会把多余空间平摊成两个巨大段间距。
+   * 整体居中，剩余空间落在栈的上下两端而非段与段之间。 */
+  justify-content: center;
+  gap: clamp(0.875rem, 5cqh, 3rem);
+  /* 顶部为绝对定位的箭头预留空间（箭头高 = --row-h），
+   * 否则居中的操作栈会与之重叠 */
+  padding-top: calc(var(--row-h) + clamp(0.75rem, 3cqh, 2rem));
+  /* 按钮行高基准，箭头按此取比例。与 ResultButtons/UndoAction 的
+   * min-height 保持同一条表达式。 */
+  --row-h: clamp(2.75rem, 15cqh, clamp(6rem, 11dvh, 11rem));
+}
+
+
+/* 横屏箭头钉在侧栏顶部：它是全局状态指示，位置应稳定，
+ * 不随操作栈（按钮数量/尺寸变化）上下浮动。 */
+.side-panel-arrow {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 0;
-  transform: translate(-50%, -50%);
-  font-size: clamp(2.5rem, 16vmin, 8rem);
-  font-weight: 800;
-  line-height: 1;
-  color: rgba(115, 115, 115, 0.18);
-  pointer-events: none;
-  user-select: none;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+  top: clamp(0.375rem, 2.5cqh, 1.25rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
 }
 
-/* 箭头容器：透明背景 */
-.arrow-wrapper {
-  background: transparent;
-  isolation: isolate;
-}
+/* 竖屏下箭头改挂在级数卡片上方（Scoreboard 的 arrow-rail），
+ * 侧栏内这份隐藏，避免同一状态出现两个指示 */
+@media (orientation: portrait) {
+  .side-panel-arrow {
+    display: none;
+  }
 
-/* 确保 Lucide 图标为纯线条（无填充），SVG 滤镜仅对线条发光 */
-.arrow-wrapper :deep(svg) {
-  fill: none;
-  overflow: visible;
-}
+  /* 竖屏：操作区（按钮 + 撤销）是独立心智区，整体底对齐并留底边距。
+   * 剩余空间自然落到操作区上方，成为与"箭头 + 卡片"视觉区之间的区间隔，
+   * 而不是散成无意义的空白。 */
+  .side-panel-stack {
+    justify-content: flex-end;
+    padding-bottom: clamp(0.75rem, 3cqh, 2rem);
+    /* 竖屏箭头在 Scoreboard 的轨内，侧栏不必为它留顶部空间 */
+    padding-top: clamp(0.375rem, 2.5cqh, 1.25rem);
+  }
 
-/* 红方（左侧）：箭头从左侧滑入；位移随断点略增，与箭头尺寸成比例 */
-.arrow-in-left-enter-active,
-.arrow-in-left-leave-active {
-  transition: all 0.4s var(--ease-out-expo);
-}
-.arrow-in-left-enter-from {
-  opacity: 0;
-  transform: translateX(-24px);
-}
-.arrow-in-left-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-@media (min-width: 1024px) {
-  .arrow-in-left-enter-from {
-    transform: translateX(-32px);
-  }
-  .arrow-in-left-leave-to {
-    transform: translateX(-24px);
-  }
-}
-
-/* 蓝方（右侧）：箭头从右侧滑入 */
-.arrow-in-right-enter-active,
-.arrow-in-right-leave-active {
-  transition: all 0.4s var(--ease-out-expo);
-}
-.arrow-in-right-enter-from {
-  opacity: 0;
-  transform: translateX(24px);
-}
-.arrow-in-right-leave-to {
-  opacity: 0;
-  transform: translateX(20px);
-}
-@media (min-width: 1024px) {
-  .arrow-in-right-enter-from {
-    transform: translateX(32px);
-  }
-  .arrow-in-right-leave-to {
-    transform: translateX(24px);
-  }
 }
 </style>

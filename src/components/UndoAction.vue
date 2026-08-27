@@ -24,18 +24,21 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
+/* 与结果按钮同高同宽同圆角（DESIGN.md 的 undo 契约）：
+ * 三者共用 SidePanel 提供的 --row-h 与同一条 0.26 圆角比例 */
 .undo-action {
-  min-height: clamp(3.5rem, 7.5dvh, 5rem);
+  min-height: var(--row-h, 3.5rem);
   padding: 0.5rem clamp(0.75rem, 2vw, 1.5rem);
-  border-radius: clamp(0.5rem, 1.4dvh, 1rem);
-  font-size: clamp(0.75rem, min(1.5vw, 2.2dvh), 1rem);
+  border-radius: calc(0.26 * var(--row-h, 3.5rem));
+  font-size: clamp(0.75rem, 3cqh, 1rem);
 }
 
-@media (orientation: landscape) and (max-height: 500px) {
+@container side-panel (height < 260px) and (min-width: 11rem) {
   .undo-action {
-    min-height: 3.25rem;
+    height: 2.75rem;
     padding: 0.375rem 0.5rem;
-    border-radius: 0.5rem;
+    /* 与横排结果按钮保持同一圆角 */
+    border-radius: 0.75rem;
     font-size: 0.75rem;
   }
 }

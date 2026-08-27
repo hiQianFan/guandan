@@ -19,13 +19,13 @@ const EMAIL = "helloahao@icloud.com";
     rather than stretching to infinity.
   -->
   <div class="w-full h-full bg-guandan-surface flex items-center justify-center overflow-hidden">
-    <!-- 
-      Constrain the maximum width to avoid "scattered" UI on ultra-wide screens.
-      1600px is a safe upper bound that keeps side panels reachable while feeling spacious.
-      Removed shadow to blend seamlessly with the background.
+    <!--
+      不再用 max-w 把界面锁在中央：大屏上那会让两侧操作区离屏幕边缘很远，
+      整个界面"吊"在中间。改为占满宽度，由 Scoreboard 的百分比栅格
+      （侧栏各 22%）从边缘开始分配，组件随屏幕同步放大。
     -->
     <div
-      class="w-full h-full max-w-[1600px] relative overflow-hidden flex flex-col"
+      class="w-full h-full relative overflow-hidden flex flex-col"
     >
       <Scoreboard class="ts flex-1 min-h-0" />
       <!-- Footer: 固定高度、不参与 flex 伸缩，避免挤压主内容；小屏可换行 -->
