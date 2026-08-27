@@ -1,4 +1,10 @@
-## ADDED Requirements
+# direct-scoring Specification
+
+## Purpose
+
+定义牌桌旁一次点击即完成本局计分的交互契约：结果按钮直接提交、红蓝两侧就近撤销同一份全局历史，且不引入任何二次确认或临时提示。
+
+## Requirements
 
 ### Requirement: 点击结果立即计分
 系统 SHALL 在用户点击红方或蓝方的 `+3`、`+2`、`+1` 结果按钮时立即记录该局、推进胜方级数并更新打级方，且 SHALL NOT 要求二次确认。

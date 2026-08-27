@@ -1,3 +1,7 @@
+## Purpose
+
+定义计分器的无障碍契约：触控目标尺寸、完整键盘操作、可见焦点、非颜色状态表达、辅助技术状态更新和减少动画降级，满足 WCAG 2.2 AA。
+
 ## ADDED Requirements
 
 ### Requirement: 触控目标与间距
