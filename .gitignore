@@ -31,7 +31,6 @@ nbproject
 thumbs.db  
 *.iml
 .vscode
-package-lock.json
 
 # F忽略的文件夹
 .hg  
@@ -41,4 +40,4 @@ package-lock.json
 node_modules/  
 jscoverage_lib/  
 bower_components/  
-dist/  
+dist/
